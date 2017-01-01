@@ -1,0 +1,25 @@
+{
+  "in_file": "/Users/josep/Data/Financial/vanguard_all.csv",
+  "tickers": {
+    "CA LT Tax-Exempt Admiral": "VCLAX",
+    "Health Care Fund Adm": "VGHAX",
+    "REIT Index Fund Adm": "VGSLX",
+    "Emerging Mkts Stk Idx Adm": "VEMAX",
+    "Long-Term Bond Index": "VBLTX",
+    "Federal Money Mkt Fund": "VMFXX",
+    "Total Bond Mkt Index Adm": "VBTLX",
+    "Tot Intl Stock Ix Admiral": "VTIAX",
+    "Total Stock Mkt Idx Adm": "VTSAX"
+  },
+  "col_map": {
+    "Date": ["Date"],
+    "Transaction Type": {"Transaction type": {"Buy": ["Buy"], "Sell": ["Sell"], "LTCG": ["Long-term capital gain"], "STCG": ["Short-term capital gain"], "Div": ["Dividend received"]}},
+    "Fund": ["Fund"],
+    "Shares": ["Shares transacted"],
+    "Share Price": ["Share price"],
+    "Amount": ["Amount"]
+  },
+  "_infile": "file all the tarnsactions",
+  "_tickers": "funds to track (name much match file name) an dtheir tickers",
+  "_col_map": "a dict of the form col_name_program: col_name_in_data or col_name_in_program: {value_in_program: value_in_data}"
+}
