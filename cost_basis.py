@@ -77,6 +77,7 @@ def set_price(tkr):
 THRESHOLD = 1e-8
 NUM_ITER = 100
 
+
 def irr_iteration(p, d, g1=-1.0, g2=1.0):
     """
     :param p: payments: purchases are negative and sales positive. Also the last entry must be a sale of all we have
@@ -162,9 +163,10 @@ if __name__ == '__main__':
 
     # check all in data are consistent with funds in cfg
     data_funds = df['Fund'].unique()
-    missing = [n for n in tickers if n not in data_funds]  # check the funds in scope are in the data
+    missing = [f for f in data_funds if f not in tickers]  # check the funds in scope are in the data
     if len(missing) > 0:
-        print 'missing funds: ' + str(missing)
+        print 'ERROR: Missing tickers: ' + str(missing)
+        sys.exit(0)
 
     f_df = df[df['Fund'].isin(active_funds)].copy()  # only funds in scope
     f_df.columns = ['Date', 'Fund', 'Transaction Type', 'Shares', 'Share Price', 'Amount']
@@ -172,12 +174,12 @@ if __name__ == '__main__':
     # check input data
     # exchange to, conversion to = buy, exchange from, conversion from = sell
     f_df['Transaction Type'] = f_df['Transaction Type'].apply(lambda x: x if ('Exchange' not in x and 'Conversion' not in x) else ('Buy' if 'To' in x else 'Sell'))
-    print 'transaction types: ' + str(f_df['Transaction Type'].unique())
+    print 'Initial Transaction Types: ' + str(f_df['Transaction Type'].unique())
 
     # relabel transaction types
     f_df.replace({'Long-term capital gain': 'LTCG', 'Short-term capital gain': 'STCG', 'Dividend Received': 'Div'}, inplace=True)
     if set(f_df['Transaction Type'].unique()) != {'Buy', 'Sell', 'LTCG', 'STCG', 'Div'}:
-        print 'transaction type error: ' + str(set(f_df['Transaction Type'].unique()))
+        print 'Transaction Types: ' + str(set(f_df['Transaction Type'].unique()))
 
     # Sales must have negative shares
     # Non-sales: must have positive shares
@@ -186,13 +188,23 @@ if __name__ == '__main__':
     f_df['Shares'] = f_df['Shares'].apply(lambda x: locale.atof(x))  # to float
     z = f_df[(f_df['Shares'] <= 0) & (f_df['Transaction Type']).isin(['Buy', 'LTCG', 'STCG', 'Div'])]
     if len(z) > 0:
-        print 'error: shares and transaction types'
+        print 'ERROR: shares and transaction types'
         print z
 
     z = f_df[(f_df['Shares'] >= 0) & (f_df['Transaction Type']).isin(['Sell'])]
     if len(z) > 0:
-        print 'error: shares and transaction types'
+        print 'ERROR: shares and transaction types'
         print z
+
+    z = f_df[f_df['Transaction Type'] == 'Transfer']
+    if len(z) > 0:
+        print 'Transfer Transactions'
+        print z
+
+    # drop empty funds
+    sh_df = f_df.groupby('Fund').agg({'Shares': np.sum}).reset_index()
+    fund_list = sh_df[np.abs(sh_df['Shares']) > 0.1]['Fund'].values
+    f_df = f_df[f_df['Fund'].isin(fund_list)]
 
     # share price and amount to floats
     f_df['Share Price'] = f_df['Share Price'].apply(lambda x: locale.atof((x.replace('$', ''))))
@@ -213,4 +225,5 @@ if __name__ == '__main__':
     irr_all = pd.concat([z_irr, irr_df], axis=0)
     irr_all.reset_index(inplace=True, drop=True)
     irr_all.to_csv('/tmp/irr_all.csv', index=False)
+    print irr_all.head(len(irr_all))
 

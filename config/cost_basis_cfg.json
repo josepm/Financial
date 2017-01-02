@@ -1,5 +1,5 @@
 {
-  "in_file": "/Users/josep/Data/Financial/vanguard_all.csv",
+  "in_file": "/Users/josep/Data/Financial/vanguard_ira_12-31-2016.csv",
   "tickers": {
     "CA LT Tax-Exempt Admiral": "VCLAX",
     "Health Care Fund Adm": "VGHAX",
@@ -9,7 +9,12 @@
     "Federal Money Mkt Fund": "VMFXX",
     "Total Bond Mkt Index Adm": "VBTLX",
     "Tot Intl Stock Ix Admiral": "VTIAX",
-    "Total Stock Mkt Idx Adm": "VTSAX"
+    "Total Stock Mkt Idx Adm": "VTSAX",
+    "Long-Term Invest-Gr Adm": "VWETX",
+    "Extended Mkt Index Adm": "VEXAX",
+    "Prime Money Mkt Fund": "VMMXX",
+    "Extended Mkt Index Inv": "VBTLX",
+    "Target Retirement 2025": "VTTVX"
   },
   "col_map": {
     "Date": ["Date"],
@@ -21,5 +26,6 @@
   },
   "_infile": "file all the tarnsactions",
   "_tickers": "funds to track (name much match file name) an dtheir tickers",
-  "_col_map": "a dict of the form col_name_program: col_name_in_data or col_name_in_program: {value_in_program: value_in_data}"
+  "_col_map": "a dict of the form col_name_program: col_name_in_data or col_name_in_program: {value_in_program: value_in_data}",
+  "_files": "vanguard_ira_12-31-2016.csv, vanguard_trust_12-31-2016.csv"
 }
